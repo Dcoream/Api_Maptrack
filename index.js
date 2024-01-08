@@ -24,6 +24,14 @@ const marcadorSchema = new mongoose.Schema({
 
 const Marcador = mongoose.model('Marcador', marcadorSchema);
 
+const geocercaSchema = new mongoose.Schema({
+  geocercas: {
+    type: Schema.Types.Mixed,
+  },
+}, { versionKey: false });
+
+const Geocerca = mongoose.model('Geocerca', geocercaSchema);
+
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -59,6 +67,24 @@ app.post('/guardarMarcadores', async (req, res) => {
     res.json({ mensaje: 'Marcadores guardados correctamente' });
   } catch (error) {
     console.error('Error al guardar marcadores:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+app.post('/guardarGeocerca', async (req, res) => {
+  const { geocercas } = req.body;
+
+  try {
+    console.log('Geocercas recibidas en el backend:', geocercas);
+
+    const resultadoInsercion = await Geocerca.create({ geocercas });
+
+    const { _id } = resultadoInsercion.toObject();
+    console.log('Resultado de la inserción:', { _id });
+
+    res.json({ mensaje: 'Geocercas guardadas correctamente' });
+  } catch (error) {
+    console.error('Error al guardar geocercas:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
