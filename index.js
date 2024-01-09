@@ -102,6 +102,19 @@ app.get('/obtenerPoligonos', async (req, res) => {
   }
 });
 
+// Nuevo endpoint para obtener todos los marcadores
+app.get('/obtenerMarcadores', async (req, res) => {
+  try {
+    // Buscar todos los documentos en la colección Marcador
+    const marcadores = await Marcador.find({}, { marcadores: 1 });
+    res.json(marcadores);
+    console.log(marcadores);
+  } catch (error) {
+    console.error('Error al obtener marcadores:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
