@@ -89,6 +89,19 @@ app.post('/guardarGeocerca', async (req, res) => {
   }
 });
 
+// Nuevo endpoint para obtener todos los polígonos
+app.get('/obtenerPoligonos', async (req, res) => {
+  try {
+    // Buscar todos los documentos en la colección Coordenada
+    const poligonos = await Coordenada.find({}, { coordenadas: 1 });
+    res.json(poligonos);
+    console.log(poligonos);
+  } catch (error) {
+    console.error('Error al obtener polígonos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
