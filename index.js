@@ -53,23 +53,7 @@ app.post('/guardarPoligono', async (req, res) => {
   }
 });
 
-app.post('/guardarMarcadores', async (req, res) => {
-  const { marcadores } = req.body;
 
-  try {
-    console.log('Marcadores recibidos en el backend:', marcadores);
-
-    const resultadoInsercion = await Marcador.create({ marcadores });
-
-    const { _id } = resultadoInsercion.toObject();
-    console.log('Resultado de la inserción:', { _id });
-
-    res.json({ mensaje: 'Marcadores guardados correctamente' });
-  } catch (error) {
-    console.error('Error al guardar marcadores:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
-});
 
 app.post('/guardarGeocerca', async (req, res) => {
   const { geocercas } = req.body;
@@ -102,18 +86,57 @@ app.get('/obtenerPoligonos', async (req, res) => {
   }
 });
 
-// Nuevo endpoint para obtener todos los marcadores
+
+
+app.post('/guardarMarcador', async (req, res) => {
+  const { marcador } = req.body;
+
+  try {
+    console.log('Marcador recibido en el backend:', marcador);
+
+    const resultadoInsercion = await Marcador.create({ marcadores: [marcador] });
+
+    const { _id } = resultadoInsercion.toObject();
+    console.log('Resultado de la inserción:', { _id });
+
+    res.json({ mensaje: 'Marcador guardado correctamente' });
+  } catch (error) {
+    console.error('Error al guardar el marcador:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 app.get('/obtenerMarcadores', async (req, res) => {
   try {
     // Buscar todos los documentos en la colección Marcador
     const marcadores = await Marcador.find({}, { marcadores: 1 });
-    res.json(marcadores);
-    console.log(marcadores);
+    const marcadoresData = marcadores.map((item) => item.marcadores).flat(); // Aplanar el array
+    res.json(marcadoresData);
+    console.log(marcadoresData);
   } catch (error) {
     console.error('Error al obtener marcadores:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+
+
+
+// Nuevo endpoint para obtener todas las geocercas
+app.get('/obtenerGeocercas', async (req, res) => {
+  try {
+    // Buscar todos los documentos en la colección Geocerca
+    const geocercas = await Geocerca.find({}, { geocercas: 1 });
+    // Extraer solo la propiedad geocercas y enviarla como respuesta
+    const geocercasData = geocercas.map((item) => item.geocercas);
+    res.json(geocercasData);
+    console.log(geocercasData);
+  } catch (error) {
+    console.error('Error al obtener geocercas:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+
 
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en el puerto ${PORT}`);
