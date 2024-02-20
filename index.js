@@ -12,6 +12,8 @@ const coordenadaSchema = new mongoose.Schema({
   coordenadas: {
     type: Schema.Types.Mixed,
   },
+  nombre: String, // Agregar campo para el nombre del polígono
+  descripcion: String, // Agregar campo para la descripción del polígono
 }, { versionKey: false });
 
 const Coordenada = mongoose.model('Coordenada', coordenadaSchema);
@@ -20,6 +22,9 @@ const marcadorSchema = new mongoose.Schema({
   marcadores: {
     type: Schema.Types.Mixed,
   },
+  nombre: String, // Agregar campo para el nombre del polígono
+  descripcion: String, // Agregar campo para la descripción del polígono
+
 }, { versionKey: false });
 
 const Marcador = mongoose.model('Marcador', marcadorSchema);
@@ -28,6 +33,8 @@ const geocercaSchema = new mongoose.Schema({
   geocercas: {
     type: Schema.Types.Mixed,
   },
+  nombre: String, // Agregar campo para el nombre del polígono
+  descripcion: String, // Agregar campo para la descripción del polígono
 }, { versionKey: false });
 
 const Geocerca = mongoose.model('Geocerca', geocercaSchema);
@@ -36,19 +43,19 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.post('/guardarPoligono', async (req, res) => {
-  const { coordenadas } = req.body;
+  const { coordenadas, nombre, descripcion } = req.body;
 
   try {
     console.log('Coordenadas recibidas en el backend:', coordenadas);
 
-    const resultadoInsercion = await Coordenada.create({ coordenadas });
+    const resultadoInsercion = await Coordenada.create({ coordenadas, nombre, descripcion });
 
     const { _id } = resultadoInsercion.toObject();
     console.log('Resultado de la inserción:', { _id });
 
-    res.json({ mensaje: 'Coordenadas guardadas correctamente' });
+    res.json({ mensaje: 'Polígono guardado correctamente' });
   } catch (error) {
-    console.error('Error al guardar coordenadas:', error);
+    console.error('Error al guardar polígono:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
@@ -61,7 +68,7 @@ app.post('/guardarGeocerca', async (req, res) => {
   try {
     console.log('Geocercas recibidas en el backend:', geocercas);
 
-    const resultadoInsercion = await Geocerca.create({ geocercas });
+    const resultadoInsercion = await Geocerca.create({ geocercas, nombre, descripcion });
 
     const { _id } = resultadoInsercion.toObject();
     console.log('Resultado de la inserción:', { _id });
@@ -89,12 +96,12 @@ app.get('/obtenerPoligonos', async (req, res) => {
 
 
 app.post('/guardarMarcador', async (req, res) => {
-  const { marcador } = req.body;
+  const { marcadores, nombre, descripcion } = req.body;
 
   try {
-    console.log('Marcador recibido en el backend:', marcador);
+    console.log('Marcador recibido en el backend:', marcadores);
 
-    const resultadoInsercion = await Marcador.create({ marcadores: [marcador] });
+    const resultadoInsercion = await Marcador.create({ marcadores, nombre, descripcion });
 
     const { _id } = resultadoInsercion.toObject();
     console.log('Resultado de la inserción:', { _id });
